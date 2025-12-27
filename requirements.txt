@@ -1,0 +1,7 @@
+mss
+time
+mss.tools
+pyautogui
+pytesseract
+PIL
+win11toast
