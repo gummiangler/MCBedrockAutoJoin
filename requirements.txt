@@ -1,6 +1,1 @@
-PIL
-mss
-mss.tools
 pyautogui
-win11toast
-pytesseract

@@ -1,42 +1,23 @@
-import re
-import mss
+import os
 import time
-import mss.tools
 import pyautogui
-import pytesseract
-from PIL import Image
-from win11toast import toast
-
-playerNumberScreenshotCoords = {
-    "top": 328,
-    "left": 1807,
-    "width": 50,
-    "height": 30
-}
 
 while True:
-    with mss.mss() as sct:
-        sct_img = sct.grab(playerNumberScreenshotCoords)
-        mss.tools.to_png(sct_img.rgb, sct_img.size, output="playerNumber.png")
+    try:
+        world = pyautogui.locateCenterOnScreen("images/world.png", confidence=0.9)
+        print("Welt gefunden!")
+    except pyautogui.ImageNotFoundException:
+        world = None
+        print("Welt nicht gefunden!")
 
-        fullPlayerNumber = pytesseract.image_to_string(
-            Image.open("playerNumber.png"),
-            config="--psm 7"
-        )
+    if world is not None:
+        try:
+            pyautogui.locateCenterOnScreen("images/players.png", confidence=0.9)
+            print("Kein Platz auf der Welt frei!")
+        except pyautogui.ImageNotFoundException:
+            print("Platz frei!")
+            pyautogui.click(world)
+            os.system('kdialog --title "MCBedrockAutoJoin" --warningcontinuecancel "Slot frei!"')
 
-        match = re.search(r"(\d+)\s*/\s*(\d+)", fullPlayerNumber)
-        if not match:
-            time.sleep(1)
-            continue
-
-        shortenPlayerNumber = int(match.group(1))
-
-        if shortenPlayerNumber < 8:
-            pyautogui.moveTo(1190, 337)
-            pyautogui.click()
-            toast(
-                "Auto Minecraft Bedrock Friend World Joiner",
-                "Slot frei! Betrete Welt..."
-            )
-
-    time.sleep(1)
+    print("")
+    time.sleep(2)
